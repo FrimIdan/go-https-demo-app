@@ -25,7 +25,8 @@ func init() {
     "application/json"
   ],
   "schemes": [
-    "https"
+    "https",
+    "http"
   ],
   "swagger": "2.0",
   "info": {
@@ -123,7 +124,8 @@ func init() {
     "application/json"
   ],
   "schemes": [
-    "https"
+    "https",
+    "http"
   ],
   "swagger": "2.0",
   "info": {

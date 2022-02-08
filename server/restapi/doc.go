@@ -3,6 +3,7 @@
 // Package restapi HTTPs test
 //
 //  Schemes:
+//    http
 //    https
 //  Host: localhost
 //  BasePath: /api

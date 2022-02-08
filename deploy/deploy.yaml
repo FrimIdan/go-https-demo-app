@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client
+  name: https-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: client
+      app: https-client
   strategy:
     rollingUpdate:
       maxUnavailable: 0
@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        app: client
+        app: https-client
     spec:
       containers:
         - name: client-allow
@@ -25,6 +25,8 @@ spec:
               value: "server:8433"
             - name: API_KEY
               value: "allow"
+            - name: CLIENT_CALLS_NUMBER
+              value: "100"
         - name: client-block
           image: idanfrim/https-test
           args: ["run-client"]
@@ -33,6 +35,52 @@ spec:
               value: "server:8433"
             - name: API_KEY
               value: "block"
+            - name: CLIENT_CALLS_NUMBER
+              value: "100"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-client
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: http-client
+    spec:
+      containers:
+        - name: client-allow
+          image: idanfrim/https-test
+          args: ["run-client"]
+          env:
+            - name: HOST
+              value: "server:8080"
+            - name: API_KEY
+              value: "allow"
+            - name: CLIENT_CALLS_NUMBER
+              value: "100"
+            - name: DISABLE_TLS
+              value: "true"
+        - name: client-block
+          image: idanfrim/https-test
+          args: ["run-client"]
+          env:
+            - name: HOST
+              value: "server:8080"
+            - name: API_KEY
+              value: "block"
+            - name: CLIENT_CALLS_NUMBER
+              value: "100"
+            - name: DISABLE_TLS
+              value: "true"
 ---
 apiVersion: v1
 kind: Service
@@ -76,9 +124,14 @@ spec:
         - name: server
           image: idanfrim/https-test
           args: ["run-server"]
+          env:
+            - name: TLS_CERTIFICATE
+              value: "/etc/certs/tls.crt"
+            - name: TLS_PRIVATE_KEY
+              value: "/etc/certs/tls.key"
           ports:
             - containerPort: 8080
             - containerPort: 8433
-        volumeMounts:
-          - mountPath: /etc/certs
-            name: certs
+          volumeMounts:
+            - mountPath: /etc/certs
+              name: certs

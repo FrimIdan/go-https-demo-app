@@ -121,6 +121,7 @@ func runServer(*cli.Context) error {
 	}()
 
 	server.ConfigureAPI()
+	server.EnabledListeners = []string{"http", "https"}
 	// The port to listen on for insecure connections
 	server.Port = 8080
 	// The port to listen on for secure connections
@@ -146,10 +147,10 @@ func main() {
 	viper.SetDefault("INSECURE_SKIP_VERIFY", true)
 	viper.SetDefault("API_KEY", "api-key")
 	viper.SetDefault("SLEEP_BETWEEN_CALLS", 30*time.Second)
-	viper.SetDefault("CLIENT_CALLS_NUMBER", 10)
+	viper.SetDefault("CLIENT_CALLS_NUMBER", 100) // app will run ~30 min
 	//viper.SetDefault("TLS_CA_CERTIFICATE", "/etc/certs/ca.crt")
-	viper.SetDefault("TLS_CERTIFICATE", "/etc/certs/ca.crt")
-	viper.SetDefault("TLS_PRIVATE_KEY", "/etc/certs/ca.key")
+	viper.SetDefault("TLS_CERTIFICATE", "/etc/certs/tls.crt")
+	viper.SetDefault("TLS_PRIVATE_KEY", "/etc/certs/tls.key")
 
 	initLogs()
 

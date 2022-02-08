@@ -1,3 +1,13 @@
+## Build & Push Docker
+
+```sh
+$ VERSION=<tag> DOCKER_REGISTRY=<registry> make docker-push
+```
+
+* Update `deploy/deploy.yaml` with the pushed image name.
+
+## Deploy
+
 ### Generate certificates
 
 First generate a self-signed rsa key and certificate that the server can use for TLS.
