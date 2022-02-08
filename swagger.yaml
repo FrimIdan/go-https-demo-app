@@ -1,0 +1,64 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "HTTPs test"
+
+basePath: '/api'
+
+schemes:
+  - https
+  - http
+
+consumes: [ "application/json" ]
+produces: [ "application/json" ]
+
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+
+paths:
+  /test:
+    post:
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: 'body'
+          name: 'body'
+          required: true
+          schema:
+            $ref: '#/definitions/Body'
+      responses:
+        '201':
+          description: 'Success'
+          schema:
+            $ref: '#/definitions/OK'
+        401:
+          description: Not authenticated
+        403:
+          description: Access token does not have the required scope
+    get:
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/OK'
+        401:
+          description: Not authenticated
+        403:
+          description: Access token does not have the required scope
+
+definitions:
+  OK:
+    type: object
+    properties:
+      id:
+        type: integer
+  Body:
+    type: object
+    properties:
+      body:
+        type: string

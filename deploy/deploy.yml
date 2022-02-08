@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client-allow
+          image: idanfrim/https-test
+          args: ["run-client"]
+          env:
+            - name: HOST
+              value: "server:8433"
+            - name: API_KEY
+              value: "allow"
+        - name: client-block
+          image: idanfrim/https-test
+          args: ["run-client"]
+          env:
+            - name: HOST
+              value: "server:8080"
+            - name: API_KEY
+              value: "block"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    app: server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http
+    - port: 8433
+      name: https
+  selector:
+    app: server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      volumes:
+        - name: certs
+          secret:
+            secretName: https-test-certs
+      containers:
+        - name: server
+          image: idanfrim/https-test
+          args: ["run-server"]
+          ports:
+            - containerPort: 8080
+            - containerPort: 8433
+        volumeMounts:
+          - mountPath: /etc/certs
+            name: certs
