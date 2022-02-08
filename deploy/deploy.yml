@@ -30,7 +30,7 @@ spec:
           args: ["run-client"]
           env:
             - name: HOST
-              value: "server:8080"
+              value: "server:8433"
             - name: API_KEY
               value: "block"
 ---
