@@ -38,50 +38,50 @@ spec:
             - name: CLIENT_CALLS_NUMBER
               value: "100"
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: http-client
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: http-client
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 3
-  template:
-    metadata:
-      labels:
-        app: http-client
-    spec:
-      containers:
-        - name: client-allow
-          image: idanfrim/https-test
-          args: ["run-client"]
-          env:
-            - name: HOST
-              value: "server:8080"
-            - name: API_KEY
-              value: "allow"
-            - name: CLIENT_CALLS_NUMBER
-              value: "100"
-            - name: DISABLE_TLS
-              value: "true"
-        - name: client-block
-          image: idanfrim/https-test
-          args: ["run-client"]
-          env:
-            - name: HOST
-              value: "server:8080"
-            - name: API_KEY
-              value: "block"
-            - name: CLIENT_CALLS_NUMBER
-              value: "100"
-            - name: DISABLE_TLS
-              value: "true"
----
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: http-client
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: http-client
+#  strategy:
+#    rollingUpdate:
+#      maxUnavailable: 0
+#      maxSurge: 3
+#  template:
+#    metadata:
+#      labels:
+#        app: http-client
+#    spec:
+#      containers:
+#        - name: client-allow
+#          image: idanfrim/https-test
+#          args: ["run-client"]
+#          env:
+#            - name: HOST
+#              value: "server:8080"
+#            - name: API_KEY
+#              value: "allow"
+#            - name: CLIENT_CALLS_NUMBER
+#              value: "100"
+#            - name: DISABLE_TLS
+#              value: "true"
+#        - name: client-block
+#          image: idanfrim/https-test
+#          args: ["run-client"]
+#          env:
+#            - name: HOST
+#              value: "server:8080"
+#            - name: API_KEY
+#              value: "block"
+#            - name: CLIENT_CALLS_NUMBER
+#              value: "100"
+#            - name: DISABLE_TLS
+#              value: "true"
+#---
 apiVersion: v1
 kind: Service
 metadata:
