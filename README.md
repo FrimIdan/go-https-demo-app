@@ -29,5 +29,3 @@ Deploy client & server.
 ```sh
 $ kubectl apply -f deploy/deploy.yaml
 ```
-
-test
