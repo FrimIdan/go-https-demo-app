@@ -1,0 +1,20 @@
+name: pr-code-review-auto-approve
+on:
+  pull_request:
+
+jobs:
+  auto-approve:
+    name: Auto approve PR
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+    - uses: hmarr/auto-approve-action@v2
+    - name: print commit sha
+      run: echo ${{ github.sha }}
+    - name: print review history
+      run: |
+        curl --request GET \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'accept: application/vnd.github+json' \
+        --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews
